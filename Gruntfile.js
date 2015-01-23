@@ -93,17 +93,6 @@ module.exports = function(grunt) {
         }
       }
     },
-    less: {
-      options: {
-        // dumpLineNumbers: 'all',
-        paths: ['<%= yo.src %>']
-      },
-      dist: {
-        files: {
-          '<%= yo.src %>/<%= yo.name %>.css': '<%= yo.src %>/<%= yo.name %>.less'
-        }
-      }
-    },
     jshint: {
       gruntfile: {
         options: {
@@ -168,7 +157,13 @@ module.exports = function(grunt) {
         src: '<%= concat.dist.dest %>',
         dest: '<%= yo.dist %>/<%= pkg.name %>.min.js'
       }
-    }
+    },
+    bump: {
+      options: {
+        files: ['package.json', 'bower.json'],
+        commitFiles: ['package.json', 'bower.json']
+      }
+    },
   });
 
   grunt.registerTask('test', [
