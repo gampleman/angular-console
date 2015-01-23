@@ -323,7 +323,7 @@ angular.module('AngularConsole', []).directive('console', function($q) {
           }
 
           transclude(scope, function(clone, transclusionScope) {
-            var commands = _(clone.text().split(/\/\/\s*=>.+?\n(\/\/.+?\n)*/)).map(function(command) {
+            var commands = _(clone.text().split(/\/\/\s*=>.+?(\n|$)(\/\/.+?(\n|$))*/)).map(function(command) {
               return command && command.trim();
             }).filter(function(command) {
               return command && command !== '';
