@@ -324,7 +324,7 @@ angular.module('AngularConsole', []).directive('console', function($q) {
               return command && command.trim();
             }).filter(function(command) {
               return command && command !== '';
-            }).each(ctrl.evaluate, ctrl);
+            }).each(ctrl.evaluate, ctrl).value();
             ctrl.historyState = scope.history.length;
           });
         });
