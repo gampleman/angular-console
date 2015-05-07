@@ -47,7 +47,6 @@ angular.module('AngularConsole', []).directive('console', [
               item.result = error.toString();
               item.type = 'error';
             }
-            console.log(item);
             // Add the item to the history
             return this.addHistory(item);
           };
@@ -214,7 +213,7 @@ angular.module('AngularConsole', []).directive('console', [
           this.inject = function (props) {
             try {
               _.each(props, function (prop) {
-                self.sandbox.eval('var ' + prop + ' = angular.element(document).injector().get("' + prop + '");');
+                self.sandbox.eval('var ' + prop + ' = angular.element(document.body).injector().get("' + prop + '");');
               });
             } catch (e) {
               return 'Error: Injection failed: ' + e.message + '\nHave you initialized Angular properly?';
@@ -296,7 +295,6 @@ angular.module('AngularConsole', []).directive('console', [
                 }).filter(function (command) {
                   return command && command !== '';
                 }).each(ctrl.evaluate, ctrl);
-              console.log(commands.value(), scope.history);
               ctrl.historyState = scope.history.length;
             });
           });

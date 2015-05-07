@@ -47,7 +47,6 @@ angular.module('AngularConsole', []).directive('console', function($q) {
           item.result = error.toString();
           item.type = 'error';
         }
-        console.log(item);
         // Add the item to the history
         return this.addHistory(item);
       };
@@ -148,8 +147,6 @@ angular.module('AngularConsole', []).directive('console', function($q) {
         return json;
       };
 
-
-
       $scope.keydown = function(e) {
         // Register shift, control and alt keydown
         if ( _([16,17,18]).indexOf(e.which, true) > -1 ) self.ctrl = true;
@@ -231,7 +228,7 @@ angular.module('AngularConsole', []).directive('console', function($q) {
       this.inject = function(props) {
         try {
           _.each(props, function(prop) {
-            self.sandbox.eval('var ' + prop + ' = angular.element(document).injector().get("' + prop + '");');
+            self.sandbox.eval('var ' + prop + ' = angular.element(document.body).injector().get("' + prop + '");');
           });
         } catch(e) {
           return 'Error: Injection failed: ' + e.message + '\nHave you initialized Angular properly?';
@@ -328,7 +325,6 @@ angular.module('AngularConsole', []).directive('console', function($q) {
             }).filter(function(command) {
               return command && command !== '';
             }).each(ctrl.evaluate, ctrl);
-            console.log(commands.value(), scope.history);
             ctrl.historyState = scope.history.length;
           });
         });
