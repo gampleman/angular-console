@@ -136,11 +136,11 @@ Example:
 <console placeholder="Type here to see some cool stuff..."></console>
 ~~~
 
-#### help-text
+#### `help-text`
 
-String. You can customize the text that appears via the `:help` command using this attribute.
+An expression that should evaluate to a string. You can customize the text that appears via the `:help` command using this attribute.
 
-#### evaluator
+#### `evaluator`
 
 String. This would be a name of an evaluator service. The default one evaluates
 JavaScript code in an iFrame and returns results. You can create your own and register
@@ -201,7 +201,7 @@ Then in the HTML you would do:
 <input type="text" placeholder="foobar" ng-model="foobarVal"/>
 <console placeholder="Type some foobars"
   foo="fooie" bar="'bar' + 2" foobar="foobarVal"
-  help-text="This language only accepts foo, bar and foobar"></console>
+  help-text="'This language only accepts foo, bar and foobar'"></console>
 ~~~
 
 The default evaluator accepts the following attributes to customize its behavior:

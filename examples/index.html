@@ -119,7 +119,7 @@
     </style>
   </head>
   <body ng-app="Test">
-    <h3>Using scritps</h3>
+    <h3>Using scripts</h3>
     <console result-prefix="'> '" placeholder="Type javascript expressions here..." scripts="['https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.9/angular.js', 'http://localhost:9000/setup-injection.js']" inject="['$q']">
       3 + 3 // => 6
       2 + 2 // => 4
@@ -130,5 +130,56 @@
       3 + 3 // => 6
       2 + 2 // => 4
     </console>
+    <h3>Foobar</h3>
+    <script type="text/javascript">
+    angular.module('Test').factory('fooBarEvaluator', function($q) {
+
+      /* You will be passed the directive's attributes object,
+       * it's scope object.
+       */
+      return function(attr, scope) {
+            // you can retrieve string settings like this:
+        var foo = attr.foo || 'foo',
+            // and dynamic ones like this:
+            bar = attr.bar && scope.$parent.$eval(attr.bar);
+        // and bound ones like this
+        var foobar = foo + bar;
+        if (attr.foobar) {
+          scope.$parent.$watch(attr.foobar, function(val) {
+            foobar = val;
+          });
+        }
+
+        // any more initalization should happen here
+
+        // then return a promise for an evaluator object
+        return $q.when({
+          // this object currently should have an `evaluate` method
+          evaluate: function(command) {
+            switch(command) {
+              case 'foo':
+                // this function should return a promise for a Result object
+                return $q.when({
+                  // this will be displayed as the result text, should be a string
+                  result: foo,
+                  // you can use the optional type attribute to add a css class to the result
+                  type: 'string'
+                });
+              case 'bar':
+                return $q.when({ result: bar });
+              case 'foobar':
+                return $q.when({ result: foobar });
+              default:
+                return $q.when({ result: 'Unrecognised command', type: 'error' });
+            }
+          }
+        });
+      };
+    });
+    </script>
+    <input type="text" placeholder="foobar" ng-model="foobarVal"/>
+    <console placeholder="Type some foobars" evaluator="fooBarEvaluator"
+      foo="fooie" bar="'bar' + 2" foobar="foobarVal"
+      help-text="'This language only accepts foo, bar and foobar'"></console>
   </body>
 </html>

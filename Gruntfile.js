@@ -86,7 +86,7 @@ module.exports = function(grunt) {
               lrSnippet,
               mountFolder(connect, '.tmp'),
               mountFolder(connect, yoConfig.src),
-              mountFolder(connect, 'main'),
+              mountFolder(connect, 'examples'),
               mountFolder(connect, 'bower_components')
             ];
           }
