@@ -145,7 +145,7 @@ module.exports = function(grunt) {
         stripBanners: true
       },
       dist: {
-        src: ['<%= yo.src %>/<%= pkg.name %>.js'],
+        src: ['<%= yo.src %>/*.js'],
         dest: '<%= yo.dist %>/<%= pkg.name %>.js'
       }
     },
@@ -175,6 +175,7 @@ module.exports = function(grunt) {
   grunt.registerTask('build', [
     'clean:dist',
     'ngmin:dist',
+    'concat:dist',
     'uglify:dist'
   ]);
 

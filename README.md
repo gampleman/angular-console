@@ -3,12 +3,23 @@
 Angular Console is a JavaScript console that you can embed in your webpage. We use
 it for our internal documentation, but it can be used in a variety of contexts.
 
+- Easy to setup
+- Can be easily customized by using HTML attributes
+- Plugin your own evaluation service
+
+
 ## Getting Started
 
 Download the [production version][min] or the [development version][max].
 
 [min]: https://raw.github.com/gampleman/jquery-angular-console/master/dist/angular-angular-console.min.js
 [max]: https://raw.github.com/gampleman/jquery-angular-console/master/dist/angular-angular-console.js
+
+or use
+
+```sh
+bower install angular-console
+```
 
 In your web page:
 
@@ -28,6 +39,69 @@ If you are using AngularJS, then you need to add this module as a dependency:
 
 ```javascript
 angular.module('MyApp', ['AngularConsole']);
+```
+
+You may want to add some CSS similar to this, but adding some colors etc:
+
+```css
+console,
+console pre.output,
+console pre.output span,
+console textarea,
+console textarea:focus {
+  font-family:  monospace;
+}
+console {
+  color: #ccc;
+  background: #333;
+  padding: 20px 20px 15px;
+  margin: 30px auto;
+  display: block;
+}
+console pre.output {
+  display: block;
+  white-space: pre;
+  width: 100%;
+  height: 285px;
+  overflow-y: auto;
+  position: relative;
+  padding: 0;
+  margin: 0 0 10px;
+  border: 0 none;
+}
+console pre.output span           { color:#f7f7f7; }
+
+console pre.output span.command   { color:#ccc; }
+console pre.output span.prefix    { color:#777; }
+/* These are type hints, you can add more if you wish,
+ * the builtin ones are number, string, object, array, error, undefined and
+ * builtin (used for things like :help)
+ */
+console pre.output span.error     { color:#f77; }
+
+console .input {
+  padding:0 0 0 15px;
+  position:relative;
+}
+console .input:before {
+  content:">";
+  position:absolute;
+  top: 1px;
+  left: 0;
+  color:#ddd
+}
+console textarea {
+  border:0 none;
+  outline:0 none;
+  padding:0;
+  margin:0;
+  resize: none;
+  width:100%;
+  overflow:hidden;
+}
+console textarea:focus {
+  outline:0 none;
+}
 ```
 
 ## Documentation
@@ -61,6 +135,76 @@ Example:
 ~~~html
 <console placeholder="Type here to see some cool stuff..."></console>
 ~~~
+
+#### help-text
+
+String. You can customize the text that appears via the `:help` command using this attribute.
+
+#### evaluator
+
+String. This would be a name of an evaluator service. The default one evaluates
+JavaScript code in an iFrame and returns results. You can create your own and register
+it through this attribute (or simply call it `consoleEvaluator` to replace the default).
+
+An evaluator service might look like this:
+
+```javascript
+angular.factory('fooBarEvaluator', function($q) {
+
+  /* You will be passed the directive's attributes object,
+   * it's scope object.
+   */
+  return function(attr, scope) {
+        // you can retrieve string settings like this:
+    var foo = attr.fooVal || 'foo',
+        // and dynamic ones like this:
+        bar = attr.bar && scope.$parent.$eval(attr.bar);
+    // and bound ones like this
+    var foobar = foo + bar;
+    if (attr.foobar) {
+      scope.$parent.$watch(attr.foobar, function(val) {
+        foobar = val;
+      });
+    }
+
+    // any more initalization should happen here
+
+    // then return a promise for an evaluator object
+    return $q.when({
+      // this object currently should have an `evaluate` method
+      evaluate: function(command) {
+        switch(command) {
+          case 'foo':
+            // this function should return a promise for a Result object
+            return $q.when({
+              // this will be displayed as the result text, should be a string
+              result: foo,
+              // you can use the optional type attribute to add a css class to the result
+              type: 'string'
+            });
+          case 'bar':
+            return $q.when({ result: bar });
+          case 'foobar':
+            return $q.when({ result: foobar });
+          default:
+            return $q.when({ result: 'Unrecognised command', type: 'error' });
+        }
+      }
+    });
+  };
+});
+```
+
+Then in the HTML you would do:
+
+~~~html
+<input type="text" placeholder="foobar" ng-model="foobarVal"/>
+<console placeholder="Type some foobars"
+  foo="fooie" bar="'bar' + 2" foobar="foobarVal"
+  help-text="This language only accepts foo, bar and foobar"></console>
+~~~
+
+The default evaluator accepts the following attributes to customize its behavior:
 
 #### `src`
 
@@ -141,20 +285,17 @@ statements would be prepopulated in your history.
 The directive exposes a controller whose methods you can call or overwrite, in
 which case you can customize the behavior.
 
-#### `load(src)`
-
-Load a remote script into the context. Returns a promise.
-
 #### `evaluate(command)`
 
 This will `eval` the string command in the context and add it to the history, displaying
 it in the console as well as the result.
 
-#### `inject(properties)`
-
-Injects a list of services into the context as local variables. See `inject` above.
 
 #### `specialCommands(command)`
 
 This is a filter on the commands which handles the special commands the user can type.
 If it returns `false`, the command will not be `evaluate`d.
+
+# License
+
+MIT

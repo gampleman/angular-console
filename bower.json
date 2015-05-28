@@ -1,9 +1,10 @@
 {
   "name": "angular-console",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "main": "dist/angular-console.min.js",
   "dependencies": {
-    "lodash": "~2"
+    "lodash": "~2",
+    "angular": "~1",
   },
   "devDependencies": {
     "angular": "latest",
