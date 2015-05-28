@@ -148,7 +148,7 @@ it through this attribute (or simply call it `consoleEvaluator` to replace the d
 
 An evaluator service might look like this:
 
-```javascript
+~~~javascript
 angular.factory('fooBarEvaluator', function($q) {
 
   /* You will be passed the directive's attributes object,
@@ -193,13 +193,13 @@ angular.factory('fooBarEvaluator', function($q) {
     });
   };
 });
-```
+~~~
 
 Then in the HTML you would do:
 
 ~~~html
 <input type="text" placeholder="foobar" ng-model="foobarVal"/>
-<console placeholder="Type some foobars"
+<console placeholder="Type some foobars" evaluator="fooBarEvaluator"
   foo="fooie" bar="'bar' + 2" foobar="foobarVal"
   help-text="'This language only accepts foo, bar and foobar'"></console>
 ~~~
